@@ -36,12 +36,8 @@ export const Auth: React.FC = () => {
 
         if (error) throw error;
 
-        if (data.user && !data.user.email_confirmed_at) {
-          setSuccess('Account created! Check your email for the confirmation link to sign in.');
-          setIsSignUp(false);
-        } else {
-          // Auto-confirmed, AuthContext will handle sign in
-        }
+        setSuccess('Account created successfully!');
+        setIsSignUp(false);
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
