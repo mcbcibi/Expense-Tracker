@@ -184,7 +184,7 @@ function App() {
     );
   }
 
-  return user ? <AuthenticatedApp /> : <Auth setUser={() => {}} />;
+  return user ? <AuthenticatedApp /> : <Auth />;
 }
 
 function AppWithAuth() {

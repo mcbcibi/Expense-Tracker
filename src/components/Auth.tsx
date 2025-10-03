@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { supabase } from '../utils/supabase';
 import { Eye, EyeOff, Mail, Lock, UserPlus, LogIn } from 'lucide-react';
 
-interface AuthProps {
-  setUser: (user: any) => void;
-}
-
-export const Auth: React.FC<AuthProps> = ({ setUser }) => {
+export const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -21,6 +18,7 @@ export const Auth: React.FC<AuthProps> = ({ setUser }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(null);
 
     const { email, password, fullName } = formData;
 
@@ -39,9 +37,10 @@ export const Auth: React.FC<AuthProps> = ({ setUser }) => {
         if (error) throw error;
 
         if (data.user && !data.user.email_confirmed_at) {
-          setError('Check your email for the confirmation link!');
+          setSuccess('Account created! Check your email for the confirmation link to sign in.');
+          setIsSignUp(false);
         } else {
-          setUser(data.user);
+          // Auto-confirmed, AuthContext will handle sign in
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,7 +49,7 @@ export const Auth: React.FC<AuthProps> = ({ setUser }) => {
         });
 
         if (error) throw error;
-        setUser(data.user);
+        // AuthContext will handle sign in
       }
     } catch (err: any) {
       setError(err.message);
@@ -79,6 +78,11 @@ export const Auth: React.FC<AuthProps> = ({ setUser }) => {
         </div>
 
         <form className="mt-8 space-y-6 bg-white p-8 rounded-2xl shadow-lg" onSubmit={handleAuth}>
+          {success && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+              {success}
+            </div>
+          )}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
               {error}

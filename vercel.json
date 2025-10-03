@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": null,
+  "env": {
+    "VITE_SUPABASE_URL": "https://zsdpperuijypqqofndpo.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZHBwZXJ1aWp5cHFxb2ZuZHBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODczNjAsImV4cCI6MjA3NTA2MzM2MH0.OPZcAEWHnyjTOTOqDCVDnQZVA6L1Du4eCXcV5vkVOx4"
+  }
+}
