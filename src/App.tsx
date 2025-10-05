@@ -93,11 +93,14 @@ function AppContent() {
                       <div className="px-2 py-2 space-y-1">
                         <button
                           onClick={async () => {
-                            try {
-                              setShowProfileDropdown(false);
-                              await signOut();
-                            } catch (error) {
-                              console.error('Error signing out:', error);
+                            const confirmed = window.confirm('Are you sure you want to sign out?');
+                            if (confirmed) {
+                              try {
+                                setShowProfileDropdown(false);
+                                await signOut();
+                              } catch (error) {
+                                console.error('Error signing out:', error);
+                              }
                             }
                           }}
                           className="w-full px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 text-sm font-medium flex items-center gap-2 transition-colors rounded-lg"
