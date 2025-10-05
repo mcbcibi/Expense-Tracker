@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  error: string | null;
   signOut: () => Promise<void>;
 }
 
@@ -15,6 +16,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Get initial session
@@ -40,13 +42,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Error signing out:', error);
+        throw error;
+      }
+      // Clear local state
+      setUser(null);
+      setSession(null);
+    } catch (error) {
+      console.error('Error during sign out:', error);
+      setError('Failed to sign out');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const value = {
     user,
     session,
     loading,
+    error,
     signOut,
   };
 

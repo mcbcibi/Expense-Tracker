@@ -93,8 +93,8 @@ function AppContent() {
                       <button
                         onClick={async () => {
                           try {
-                            await signOut();
                             setShowProfileDropdown(false);
+                            await signOut();
                           } catch (error) {
                             console.error('Error signing out:', error);
                           }
