@@ -33,7 +33,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [categories, setCategories] = useState<Category[]>(defaultCategories);
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [recurringTransactions, setRecurringTransactions] = useState<RecurringTransaction[]>([]);
-  const [currency, setCurrency] = useState<string>('USD');
+  const [currency, setCurrency] = useState<string>('INR');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

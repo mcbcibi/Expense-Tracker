@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, Settings as SettingsIcon, Globe, Tag, Plus, X, Edit2, Save, Trash2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Category } from '../types';
@@ -33,6 +33,11 @@ export const Settings: React.FC = () => {
     icon: 'MoreHorizontal',
     color: '#64748b'
   });
+  const [tempCurrency, setTempCurrency] = useState(currency);
+
+  useEffect(() => {
+    setTempCurrency(currency);
+  }, [currency]);
 
   const resetForm = () => {
     setFormData({ name: '', type: 'expense', icon: 'MoreHorizontal', color: '#64748b' });
@@ -101,17 +106,26 @@ export const Settings: React.FC = () => {
             </div>
           </div>
 
-          <select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-          >
-            {currencies.map(curr => (
-              <option key={curr.code} value={curr.code}>
-                {curr.symbol} - {curr.name} ({curr.code})
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-3">
+            <select
+              value={tempCurrency}
+              onChange={(e) => setTempCurrency(e.target.value)}
+              className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            >
+              {currencies.map(curr => (
+                <option key={curr.code} value={curr.code}>
+                  {curr.symbol} - {curr.name} ({curr.code})
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() => setCurrency(tempCurrency)}
+              disabled={tempCurrency === currency}
+              className="px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
 

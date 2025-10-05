@@ -1,11 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { Calendar, Filter, Search, Trash2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Calendar, Filter, Search, Trash2, ArrowUpRight, ArrowDownRight, Edit2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../utils/currencies';
 import * as Icons from 'lucide-react';
-import { TransactionType } from '../types';
+import { TransactionType, Transaction } from '../types';
 
-export const TransactionList: React.FC = () => {
+interface TransactionListProps {
+  onEdit: (transaction: Transaction) => void;
+}
+
+export const TransactionList: React.FC<TransactionListProps> = ({ onEdit }) => {
   const { transactions, categories, deleteTransaction, currency } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<TransactionType | 'all'>('all');
@@ -209,6 +213,12 @@ export const TransactionList: React.FC = () => {
                             <p className="text-xs text-gray-400">{transaction.paymentMethod}</p>
                           </div>
 
+                          <button
+                            onClick={() => onEdit(transaction)}
+                            className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
                           <button
                             onClick={() => {
                               if (confirm('Delete this transaction?')) {

@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { X, Plus, Tag, X as Close } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Plus, Tag, X as Close, Edit2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { TransactionType, Category } from '../types';
+import { TransactionType, Category, Transaction } from '../types';
 
 interface TransactionFormProps {
   onClose: () => void;
+  transaction?: Transaction;
+  isEdit?: boolean;
 }
 
-export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => {
-  const { addTransaction, categories, currency, addCategory } = useApp();
+export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose, transaction, isEdit = false }) => {
+  const { addTransaction, updateTransaction, categories, currency, addCategory } = useApp();
   const [formData, setFormData] = useState({
     type: 'expense' as TransactionType,
     amount: '',
@@ -17,6 +19,19 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
     paymentMethod: 'cash',
     transactionDate: new Date().toISOString().split('T')[0],
   });
+
+  useEffect(() => {
+    if (isEdit && transaction) {
+      setFormData({
+        type: transaction.type,
+        amount: transaction.amount.toString(),
+        categoryId: transaction.categoryId,
+        description: transaction.description || '',
+        paymentMethod: transaction.paymentMethod || 'cash',
+        transactionDate: transaction.transactionDate,
+      });
+    }
+  }, [isEdit, transaction]);
 
   const [showCustomCategoryForm, setShowCustomCategoryForm] = useState(false);
   const [customCategoryData, setCustomCategoryData] = useState({
@@ -85,16 +100,27 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
     e.preventDefault();
     if (!formData.amount || !formData.categoryId) return;
 
-    addTransaction({
-      type: formData.type,
-      amount: parseFloat(formData.amount),
-      categoryId: formData.categoryId,
-      description: formData.description,
-      paymentMethod: formData.paymentMethod,
-      transactionDate: formData.transactionDate,
-      createdAt: new Date().toISOString(),
-      currency,
-    });
+    if (isEdit && transaction) {
+      updateTransaction(transaction.id, {
+        type: formData.type,
+        amount: parseFloat(formData.amount),
+        categoryId: formData.categoryId,
+        description: formData.description,
+        paymentMethod: formData.paymentMethod,
+        transactionDate: formData.transactionDate,
+      });
+    } else {
+      addTransaction({
+        type: formData.type,
+        amount: parseFloat(formData.amount),
+        categoryId: formData.categoryId,
+        description: formData.description,
+        paymentMethod: formData.paymentMethod,
+        transactionDate: formData.transactionDate,
+        createdAt: new Date().toISOString(),
+        currency,
+      });
+    }
 
     onClose();
   };
@@ -103,7 +129,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">Add Transaction</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{isEdit ? 'Edit Transaction' : 'Add Transaction'}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -227,8 +253,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
             type="submit"
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
           >
-            <Plus className="w-5 h-5" />
-            Add Transaction
+            {isEdit ? <Edit2 className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+            {isEdit ? 'Update Transaction' : 'Add Transaction'}
           </button>
         </form>
       </div>
