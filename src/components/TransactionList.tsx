@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Calendar, Filter, Search, Trash2, ArrowUpRight, ArrowDownRight, Edit2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Filter, Search, Trash2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { formatCurrency } from '../utils/currencies';
 import * as Icons from 'lucide-react';
@@ -17,7 +17,6 @@ export const TransactionList: React.FC<TransactionListProps> = ({ onEdit }) => {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [expandedTransactions, setExpandedTransactions] = useState<Set<string>>(new Set());
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
@@ -171,124 +170,62 @@ export const TransactionList: React.FC<TransactionListProps> = ({ onEdit }) => {
                   {txns.map(transaction => {
                     const category = categories.find(c => c.id === transaction.categoryId);
                     const Icon = getIconComponent(category?.icon || 'DollarSign');
-                    const isExpanded = expandedTransactions.has(transaction.id);
-
-                    const toggleExpanded = () => {
-                      setExpandedTransactions(prev => {
-                        const newSet = new Set(prev);
-                        if (newSet.has(transaction.id)) {
-                          newSet.delete(transaction.id);
-                        } else {
-                          newSet.add(transaction.id);
-                        }
-                        return newSet;
-                      });
-                    };
 
                     return (
-                      <div key={transaction.id} className="bg-gray-50 rounded-xl overflow-hidden">
-                        {/* Main transaction row */}
+                      <div
+                        key={transaction.id}
+                        className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group cursor-pointer md:cursor-default"
+                        onClick={() => onEdit(transaction)}
+                      >
                         <div
-                          className="flex items-center gap-4 p-4 hover:bg-gray-100 transition-colors group cursor-pointer md:cursor-default"
-                          onClick={toggleExpanded}
+                          className="p-3 rounded-xl"
+                          style={{ backgroundColor: `${category?.color}20` }}
                         >
-                          <div
-                            className="p-3 rounded-xl"
-                            style={{ backgroundColor: `${category?.color}20` }}
-                          >
-                            <Icon
-                              className="w-5 h-5"
-                              style={{ color: category?.color }}
-                            />
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 truncate">
-                              {category?.name || 'Unknown'}
-                            </p>
-                            <p className="text-sm text-gray-500 truncate">
-                              {transaction.description || transaction.paymentMethod}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            <div className="text-right">
-                              <p
-                                className={`font-semibold flex items-center gap-1 ${
-                                  transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                                }`}
-                              >
-                                {transaction.type === 'income' ? (
-                                  <ArrowUpRight className="w-4 h-4" />
-                                ) : (
-                                  <ArrowDownRight className="w-4 h-4" />
-                                )}
-                                {transaction.type === 'income' ? '+' : '-'}
-                                {formatCurrency(transaction.amount, currency)}
-                              </p>
-                              <p className="text-xs text-gray-400">{transaction.paymentMethod}</p>
-                            </div>
-
-                            {/* Chevron for mobile */
-                            <div className="md:hidden p-2 text-gray-400">
-                              {isExpanded ? (
-                                <ChevronUp className="w-5 h-5" />
-                              ) : (
-                                <ChevronDown className="w-5 h-5" />
-                              )}
-                            </div>
-
-                            {/* Desktop direct buttons */}
-                            <div className="hidden md:flex gap-2">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onEdit(transaction);
-                                }}
-                                className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                              >
-                                <Edit2 className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (confirm('Delete this transaction?')) {
-                                    deleteTransaction(transaction.id);
-                                  }
-                                }}
-                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
+                          <Icon
+                            className="w-5 h-5"
+                            style={{ color: category?.color }}
+                          />
                         </div>
 
-                        {/* Expandable actions section for mobile */}
-                        {isExpanded && (
-                          <div className="md:hidden border-t border-gray-200 bg-gray-100 p-4">
-                            <div className="flex gap-3 justify-end">
-                              <button
-                                onClick={() => onEdit(transaction)}
-                                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                              >
-                                <Edit2 className="w-4 h-4" />
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => {
-                                  if (confirm('Delete this transaction?')) {
-                                    deleteTransaction(transaction.id);
-                                  }
-                                }}
-                                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                                Delete
-                              </button>
-                            </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 truncate">
+                            {category?.name || 'Unknown'}
+                          </p>
+                          <p className="text-sm text-gray-500 truncate">
+                            {transaction.description || transaction.paymentMethod}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p
+                              className={`font-semibold flex items-center gap-1 ${
+                                transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                              }`}
+                            >
+                              {transaction.type === 'income' ? (
+                                <ArrowUpRight className="w-4 h-4" />
+                              ) : (
+                                <ArrowDownRight className="w-4 h-4" />
+                              )}
+                              {transaction.type === 'income' ? '+' : '-'}
+                              {formatCurrency(transaction.amount, currency)}
+                            </p>
+                            <p className="text-xs text-gray-400">{transaction.paymentMethod}</p>
                           </div>
-                        )}
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm('Delete this transaction?')) {
+                                deleteTransaction(transaction.id);
+                              }
+                            }}
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     );
                   })}
