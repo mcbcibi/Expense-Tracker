@@ -24,7 +24,7 @@ const getIconComponent = (iconName: string) => {
 };
 
 export const Settings: React.FC = () => {
-  const { transactions, categories, currency, setCurrency, addCategory, updateCategory, deleteCategory } = useApp();
+  const { transactions, categories, currency, addCategory, updateCategory, deleteCategory } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -88,34 +88,6 @@ export const Settings: React.FC = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
-
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
-        <div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <Globe className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">Currency</h3>
-              <p className="text-sm text-gray-500">Select your default currency</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-            >
-              {currencies.map(curr => (
-                <option key={curr.code} value={curr.code}>
-                  {curr.symbol} - {curr.name} ({curr.code})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
 
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-6">
         <div>

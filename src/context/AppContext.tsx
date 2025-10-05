@@ -23,7 +23,6 @@ interface AppContextType {
   addRecurringTransaction: (recurring: Omit<RecurringTransaction, 'id'>) => Promise<void>;
   updateRecurringTransaction: (id: string, recurring: Partial<RecurringTransaction>) => Promise<void>;
   deleteRecurringTransaction: (id: string) => Promise<void>;
-  setCurrency: (currency: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -210,16 +209,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
-  const setCurrencyAsync = async (newCurrency: string) => {
-    try {
-      setError(null);
-      await dbService.setCurrency(newCurrency);
-      setCurrency(newCurrency);
-    } catch (err) {
-      console.error('Error setting currency:', err);
-      setError('Failed to set currency');
-    }
-  };
+
 
   return (
     <AppContext.Provider
@@ -243,7 +233,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         addRecurringTransaction,
         updateRecurringTransaction,
         deleteRecurringTransaction,
-        setCurrency: setCurrencyAsync,
       }}
     >
       {children}
