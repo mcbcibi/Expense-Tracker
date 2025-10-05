@@ -12,7 +12,7 @@ export const currencies = [
 ];
 
 export const getCurrencySymbol = (code: string): string => {
-  return currencies.find(c => c.code === code)?.symbol || '$';
+  return currencies.find(c => c.code === code)?.symbol || '₹';
 };
 
 export const formatCurrency = (amount: number, currency: string): string => {
