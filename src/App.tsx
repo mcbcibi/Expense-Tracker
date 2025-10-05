@@ -73,37 +73,39 @@ function AppContent() {
               </button>
 
               {showProfileDropdown && (
-                <div className="absolute right-0 top-12 z-50">
-                  <div className="bg-white rounded-xl shadow-lg border border-gray-200 min-w-48 p-2">
-                    <div className="px-3 py-3 border-b border-gray-100">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {user?.user_metadata?.full_name || 'User'}
-                          </p>
-                          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                <>
+                  <div className="absolute right-0 top-12 z-50">
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-200 min-w-48 p-2">
+                      <div className="px-3 py-3 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {user?.user_metadata?.full_name || 'User'}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="px-2 py-2 space-y-1">
-                      <button
-                        onClick={async () => {
-                          try {
-                            setShowProfileDropdown(false);
-                            await signOut();
-                          } catch (error) {
-                            console.error('Error signing out:', error);
-                          }
-                        }}
-                        className="w-full px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 text-sm font-medium flex items-center gap-2 transition-colors rounded-lg"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </button>
+                      <div className="px-2 py-2 space-y-1">
+                        <button
+                          onClick={async () => {
+                            try {
+                              setShowProfileDropdown(false);
+                              await signOut();
+                            } catch (error) {
+                              console.error('Error signing out:', error);
+                            }
+                          }}
+                          className="w-full px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 text-sm font-medium flex items-center gap-2 transition-colors rounded-lg"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -112,7 +114,7 @@ function AppContent() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowProfileDropdown(false)}
                   />
-                </div>
+                </>
               )}
             </div>
           </div>
