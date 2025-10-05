@@ -120,8 +120,7 @@ export const Settings: React.FC = () => {
             </select>
             <button
               onClick={() => setCurrency(tempCurrency)}
-              disabled={tempCurrency === currency}
-              className="px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
             >
               Save
             </button>
