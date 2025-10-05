@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Tag, X as Close } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { TransactionType } from '../types';
+import { TransactionType, Category } from '../types';
 
 interface TransactionFormProps {
   onClose: () => void;
 }
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => {
-  const { addTransaction, categories, currency } = useApp();
+  const { addTransaction, categories, currency, addCategory } = useApp();
   const [formData, setFormData] = useState({
     type: 'expense' as TransactionType,
     amount: '',
@@ -17,6 +17,67 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
     paymentMethod: 'cash',
     transactionDate: new Date().toISOString().split('T')[0],
   });
+
+  const [showCustomCategoryForm, setShowCustomCategoryForm] = useState(false);
+  const [customCategoryData, setCustomCategoryData] = useState({
+    name: '',
+    type: 'expense' as 'expense' | 'income',
+    icon: 'MoreHorizontal',
+    color: '#64748b'
+  });
+
+  const colorOptions = [
+    '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e',
+    '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1',
+    '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#f43f5e', '#64748b'
+  ];
+
+  const averageIconOptions = [
+    'Utensils', 'Car', 'ShoppingBag', 'Receipt', 'Film', 'Heart', 'GraduationCap',
+    'Sparkles', 'Home', 'MoreHorizontal', 'Briefcase', 'Laptop', 'TrendingUp',
+    'Gift', 'PlusCircle', 'Coffee', 'Phone', 'Plane', 'Hotel', 'Book', 'Music',
+    'Gamepad2', 'Palette', 'Bike', 'Bus', 'Train', 'Ship', 'Camera', 'Headphones'
+  ];
+
+  const getIconComponent = (iconName: string) => {
+    return React.createElement('span', { className: 'w-5 h-5 inline-block text-center' }, iconName.substring(0,1));
+  };
+
+  const handleSaveCustomCategory = async () => {
+    if (!customCategoryData.name.trim()) return;
+
+    try {
+      await addCategory({
+        name: customCategoryData.name,
+        type: customCategoryData.type,
+        icon: customCategoryData.icon,
+        color: customCategoryData.color
+      });
+
+      // Refresh categories and select the newly created one
+      const refreshedCategories = categories.filter(c => c.type === customCategoryData.type);
+      const newCategory = refreshedCategories[refreshedCategories.length - 1]; // Get the last added category
+
+      // Select the newly created category
+      setFormData({
+        ...formData,
+        categoryId: newCategory?.id || '',
+        type: customCategoryData.type as TransactionType
+      });
+
+      // Reset custom category form
+      setCustomCategoryData({
+        name: '',
+        type: 'expense',
+        icon: 'MoreHorizontal',
+        color: '#64748b'
+      });
+
+      setShowCustomCategoryForm(false);
+    } catch (error) {
+      console.error('Error creating category:', error);
+    }
+  };
 
   const filteredCategories = categories.filter(c => c.type === formData.type);
 
@@ -120,7 +181,14 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
             <select
               required
               value={formData.categoryId}
-              onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+              onChange={(e) => {
+                if (e.target.value === 'custom') {
+                  setShowCustomCategoryForm(true);
+                  setFormData({ ...formData, categoryId: '' });
+                } else {
+                  setFormData({ ...formData, categoryId: e.target.value });
+                }
+              }}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             >
               <option value="">Select a category</option>
@@ -164,6 +232,127 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => 
           </button>
         </form>
       </div>
+
+      {/* Custom Category Form Modal */}
+      {showCustomCategoryForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <Tag className="w-5 h-5" />
+                  Create Custom Category
+                </h3>
+                <button
+                  onClick={() => setShowCustomCategoryForm(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <Close className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={customCategoryData.name}
+                  onChange={(e) => setCustomCategoryData({ ...customCategoryData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter category name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Type
+                </label>
+                <div className="flex gap-2">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="customType"
+                      value="expense"
+                      checked={customCategoryData.type === 'expense'}
+                      onChange={(e) => setCustomCategoryData({ ...customCategoryData, type: e.target.value as 'expense' })}
+                      className="mr-1"
+                    />
+                    Expense
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="customType"
+                      value="income"
+                      checked={customCategoryData.type === 'income'}
+                      onChange={(e) => setCustomCategoryData({ ...customCategoryData, type: e.target.value as 'income' })}
+                      className="mr-1"
+                    />
+                    Income
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Icon (Preview: {getIconComponent(customCategoryData.icon)})
+                </label>
+                <select
+                  value={customCategoryData.icon}
+                  onChange={(e) => setCustomCategoryData({ ...customCategoryData, icon: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {averageIconOptions.map((icon) => (
+                    <option key={icon} value={icon}>{icon}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Color
+                </label>
+                <div className="grid grid-cols-6 gap-1">
+                  {colorOptions.slice(0, 12).map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setCustomCategoryData({ ...customCategoryData, color })}
+                      className={`w-8 h-8 rounded-full border-2 transition-all ${
+                        customCategoryData.color === color ? 'border-gray-900' : 'border-gray-200'
+                      }`}
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={handleSaveCustomCategory}
+                  disabled={!customCategoryData.name.trim()}
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400"
+                >
+                  <Plus className="w-4 h-4" />
+                  Save & Select Category
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowCustomCategoryForm(false)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
