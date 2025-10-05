@@ -57,7 +57,7 @@ function AppContent() {
                 <Wallet className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Cibi Expense Tracker</h1>
+                <h1 className="text-3xl font-bold text-gray-900">Expense Tracker</h1>
                 <p className="text-gray-500">Manage your finances with ease</p>
               </div>
             </div>
