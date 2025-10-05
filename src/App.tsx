@@ -17,7 +17,6 @@ import {
   List,
   BarChart3,
   Target,
-  Repeat,
   Tag,
   Settings as SettingsIcon,
   Wallet,
@@ -25,7 +24,7 @@ import {
   LogOut
 } from 'lucide-react';
 
-type Tab = 'dashboard' | 'transactions' | 'analytics' | 'budgets' | 'recurring' | 'categories' | 'settings';
+type Tab = 'dashboard' | 'transactions' | 'analytics' | 'budgets' | 'categories' | 'settings';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -38,7 +37,6 @@ function AppContent() {
     { id: 'transactions' as Tab, label: 'Transactions', icon: List },
     { id: 'analytics' as Tab, label: 'Analytics', icon: BarChart3 },
     { id: 'budgets' as Tab, label: 'Budgets', icon: Target },
-    { id: 'recurring' as Tab, label: 'Recurring', icon: Repeat },
     { id: 'categories' as Tab, label: 'Categories', icon: Tag },
     { id: 'settings' as Tab, label: 'Settings', icon: SettingsIcon },
   ];
@@ -85,7 +83,17 @@ function AppContent() {
                       </div>
                     </div>
 
-                    <div className="px-2 py-2">
+                    <div className="px-2 py-2 space-y-1">
+                      <button
+                        onClick={() => {
+                          setActiveTab('settings');
+                          setShowProfileDropdown(false);
+                        }}
+                        className="w-full px-3 py-2 text-gray-700 hover:bg-gray-50 text-sm font-medium flex items-center gap-2 transition-colors rounded-lg"
+                      >
+                        <SettingsIcon className="w-4 h-4" />
+                        Settings
+                      </button>
                       <button
                         onClick={async () => {
                           try {
@@ -125,7 +133,7 @@ function AppContent() {
         </header>
 
         <nav className="mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -151,7 +159,6 @@ function AppContent() {
           {activeTab === 'transactions' && <TransactionList />}
           {activeTab === 'analytics' && <Charts />}
           {activeTab === 'budgets' && <BudgetManager />}
-          {activeTab === 'recurring' && <RecurringTransactions />}
           {activeTab === 'categories' && <CategoryManager />}
           {activeTab === 'settings' && <Settings />}
         </main>
