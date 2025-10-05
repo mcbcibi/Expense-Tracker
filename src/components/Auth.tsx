@@ -7,6 +7,7 @@ export const Auth: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -30,14 +31,19 @@ export const Auth: React.FC = () => {
           options: {
             data: {
               full_name: fullName,
-            }
+            },
+            emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/` : undefined
           }
         });
 
         if (error) throw error;
 
-        setSuccess('Account created successfully!');
-        setIsSignUp(false);
+        if (data.user && data.user.email_confirmed_at) {
+          setSuccess('Account created successfully! You are now signed in.');
+        } else {
+          setSuccess('Account created! Please check your email to confirm your account, then sign in.');
+          setIsSignUp(false);
+        }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
