@@ -118,7 +118,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose, trans
         paymentMethod: formData.paymentMethod,
         transactionDate: formData.transactionDate,
         createdAt: new Date().toISOString(),
-        currency,
+        currency: 'INR',
       });
     }
 

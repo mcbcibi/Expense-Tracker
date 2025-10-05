@@ -354,7 +354,7 @@ export const dbService = {
 
   async getCurrency(): Promise<string> {
     const profile = await this.getUserProfile();
-    return profile?.default_currency || 'USD';
+    return profile?.default_currency || 'INR';
   },
 
   async setCurrency(currency: string): Promise<void> {
