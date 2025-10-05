@@ -24,7 +24,7 @@ import {
   LogOut
 } from 'lucide-react';
 
-type Tab = 'dashboard' | 'transactions' | 'analytics' | 'budgets' | 'categories' | 'settings';
+type Tab = 'dashboard' | 'transactions' | 'analytics' | 'budgets' | 'settings';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -37,7 +37,6 @@ function AppContent() {
     { id: 'transactions' as Tab, label: 'Transactions', icon: List },
     { id: 'analytics' as Tab, label: 'Analytics', icon: BarChart3 },
     { id: 'budgets' as Tab, label: 'Budgets', icon: Target },
-    { id: 'categories' as Tab, label: 'Categories', icon: Tag },
     { id: 'settings' as Tab, label: 'Settings', icon: SettingsIcon },
   ];
 
@@ -133,7 +132,7 @@ function AppContent() {
         </header>
 
         <nav className="mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -159,7 +158,6 @@ function AppContent() {
           {activeTab === 'transactions' && <TransactionList />}
           {activeTab === 'analytics' && <Charts />}
           {activeTab === 'budgets' && <BudgetManager />}
-          {activeTab === 'categories' && <CategoryManager />}
           {activeTab === 'settings' && <Settings />}
         </main>
 
