@@ -91,16 +91,6 @@ function AppContent() {
 
                     <div className="px-2 py-2 space-y-1">
                       <button
-                        onClick={() => {
-                          setActiveTab('settings');
-                          setShowProfileDropdown(false);
-                        }}
-                        className="w-full px-3 py-2 text-gray-700 hover:bg-gray-50 text-sm font-medium flex items-center gap-2 transition-colors rounded-lg"
-                      >
-                        <SettingsIcon className="w-4 h-4" />
-                        Settings
-                      </button>
-                      <button
                         onClick={async () => {
                           try {
                             await signOut();
