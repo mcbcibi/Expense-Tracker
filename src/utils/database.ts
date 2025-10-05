@@ -73,15 +73,41 @@ export const dbService = {
   },
 
   async updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction> {
+    // Map camelCase to snake_case for the database
+    const dbUpdates: any = {};
+
+    if (updates.categoryId !== undefined) dbUpdates.category_id = updates.categoryId;
+    if (updates.amount !== undefined) dbUpdates.amount = updates.amount;
+    if (updates.currency !== undefined) dbUpdates.currency = updates.currency;
+    if (updates.type !== undefined) dbUpdates.type = updates.type;
+    if (updates.description !== undefined) dbUpdates.description = updates.description;
+    if (updates.paymentMethod !== undefined) dbUpdates.payment_method = updates.paymentMethod;
+    if (updates.transactionDate !== undefined) dbUpdates.transaction_date = updates.transactionDate;
+    if (updates.recurringId !== undefined) dbUpdates.recurring_id = updates.recurringId;
+    if (updates.createdAt !== undefined) dbUpdates.created_at = updates.createdAt;
+
     const { data, error } = await supabase
       .from('transactions')
-      .update(updates)
+      .update(dbUpdates)
       .eq('id', id)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+
+    // Return in camelCase format
+    return {
+      id: data.id,
+      categoryId: data.category_id,
+      amount: data.amount,
+      currency: data.currency,
+      type: data.type,
+      description: data.description,
+      paymentMethod: data.payment_method,
+      transactionDate: data.transaction_date,
+      recurringId: data.recurring_id,
+      createdAt: data.created_at
+    };
   },
 
   async deleteTransaction(id: string): Promise<void> {
