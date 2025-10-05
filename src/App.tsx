@@ -127,7 +127,7 @@ function AppContent() {
             </div>
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="hidden md:flex justify-end mt-4">
             <button
               onClick={() => {
                 setEditingTransaction(null);
@@ -183,6 +183,17 @@ function AppContent() {
         )}
 
       </div>
+
+      {/* Mobile Floating Button */}
+      <button
+        onClick={() => {
+          setEditingTransaction(null);
+          setShowTransactionForm(true);
+        }}
+        className="md:hidden fixed bottom-20 right-6 bg-blue-600 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-blue-700 transition-all flex items-center justify-center z-20"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
 
       {/* Mobile Bottom Tabs */}
       <div className="block md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10 shadow-lg">
