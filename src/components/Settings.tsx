@@ -33,11 +33,6 @@ export const Settings: React.FC = () => {
     icon: 'MoreHorizontal',
     color: '#64748b'
   });
-  const [tempCurrency, setTempCurrency] = useState(currency);
-
-  useEffect(() => {
-    setTempCurrency(currency);
-  }, [currency]);
 
   const resetForm = () => {
     setFormData({ name: '', type: 'expense', icon: 'MoreHorizontal', color: '#64748b' });
@@ -108,8 +103,8 @@ export const Settings: React.FC = () => {
 
           <div className="flex gap-3">
             <select
-              value={tempCurrency}
-              onChange={(e) => setTempCurrency(e.target.value)}
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
               className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             >
               {currencies.map(curr => (
@@ -118,12 +113,6 @@ export const Settings: React.FC = () => {
                 </option>
               ))}
             </select>
-            <button
-              onClick={() => setCurrency(tempCurrency)}
-              className="px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-            >
-              Save
-            </button>
           </div>
         </div>
       </div>
