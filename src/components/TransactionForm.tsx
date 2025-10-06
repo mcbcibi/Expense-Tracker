@@ -179,7 +179,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onClose, trans
               placeholder="0.00"
             />
             <div className="flex gap-2 mt-2">
-              {[100, 500, 1000].map(amount => (
+              {[10, 100, 500, 1000].map(amount => (
                 <button
                   key={amount}
                   type="button"
